@@ -24,11 +24,32 @@ import (
 	"github.com/spf13/viper"
 )
 
+const sentinelAsciiArt = `
+     _____            __  _            __
+    / ___/___  ____  / /_(_)___  ___  / /
+    \__ \/ _ \/ __ \/ __/ / __ \/ _ \/ / 
+   ___/ /  __/ / / / /_/ / / / /  __/ /  
+  /____/\___/_/ /_/\__/_/_/ /_/\___/_/   
+
+                                         `
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "sentinel",
 	Short: "Indexing, monitoring and alerting solution for Morpho vaults time-locked operations.",
-	Long:  `TODO`,
+	Long: fmt.Sprintf(`%s
+Sentinel is a tool that helps the users of MetaMorpho vaults to get realtime alerts whenever the vault curator performs a timelocked operation, 
+i.e. an action that has a potential impact on the user deposit.
+
+There are different types of timelocked actions:
+ - Decrease the timelock duration.
+ - Set a vault Guardian (if not already set).
+ - Increase the supply cap of any market in a vault.
+ - Submit the forced removal of a market from a vault.
+
+Using various connectors, the users can receive alerts on platforms such as Discord, Slack, Telegram and so on.
+You can also configure a custom connector that fits your own needs!
+`, sentinelAsciiArt),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 		defer stop()
@@ -134,15 +155,7 @@ func initLogger(loggerConfig *logger.Configuration) error {
 		FullTimestamp: true,
 	})
 
-	const msg = `
-     _____            __  _            __
-    / ___/___  ____  / /_(_)___  ___  / /
-    \__ \/ _ \/ __ \/ __/ / __ \/ _ \/ / 
-   ___/ /  __/ / / / /_/ / / / /  __/ /  
-  /____/\___/_/ /_/\__/_/_/ /_/\___/_/   
-                                         `
-
-	for _, line := range strings.Split(msg, "\n") {
+	for _, line := range strings.Split(sentinelAsciiArt, "\n") {
 		logrus.Infoln(line)
 	}
 
