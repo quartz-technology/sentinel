@@ -6,10 +6,14 @@ import (
 	"github.com/quartz-technology/sentinel/pkg/types"
 )
 
+// Service is used to send notifications upon reception of a timelock action captured by Sentinel.
 type Service interface {
+	// StartNotifyingTimeLockedActions receives the decoded events and sends the notifications using connectors.
 	StartNotifyingTimeLockedActions(ctx context.Context, timelockedActions <-chan types.TimelockedAction) error
 }
 
+// service is the implementation of the Service interface.
+// It uses multiple connectors, each one implementing a specific communication channel.
 type service struct {
 	connectors []NotificationConnector
 }

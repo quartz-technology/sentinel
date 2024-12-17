@@ -13,15 +13,18 @@ import (
 	"github.com/quartz-technology/sentinel/pkg/types"
 	xcrypto "github.com/quartz-technology/sentinel/pkg/x/crypto"
 	xiter "github.com/quartz-technology/sentinel/pkg/x/iter"
-	"golang.org/x/sync/errgroup"
 )
 
+// EventsListener is used to capture the events emitted by the MetaMorpho Factory and Vaults at each block.
 type EventsListener interface {
-	StartListeningForEventsLogs(ctx context.Context, eventsLogs chan<- *types.Log) error
+	// StartListeningForEventsLogs receives the captured blocks in a first channel, will capture the events logs emitted by the MetaMorpho contracts
+	// and send the ones from the vaults into a secondary channel to be further processed by another service.
+	StartListeningForEventsLogs(ctx context.Context, blocks <-chan uint64, eventsLogs chan<- *types.Log) error
 }
 
+// eventsListener is the implementation of the EventsListener interface.
+// It will process the events emitted by the MetaMorpho Factory to also capture the events emitted by newly deployed Vaults.
 type eventsListener struct {
-	blocksListenerService    BlocksListener
 	elClient                 *ethclient.Client
 	metamorphoFactoryAddress common.Address
 	metamorphoDeployedVaults []common.Address
@@ -31,13 +34,11 @@ type eventsListener struct {
 
 func NewEventsListener(
 	config *EventsListenerConfiguration,
-	blocksListenerService BlocksListener,
 	elClient *ethclient.Client,
 	metaMorphoFactoryABI,
 	metaMorphoVaultABI abi.ABI,
 ) (EventsListener, error) {
 	return &eventsListener{
-		blocksListenerService:    blocksListenerService,
 		elClient:                 elClient,
 		metamorphoFactoryAddress: common.HexToAddress(config.MetaMorphoFactoryAddress),
 		metamorphoDeployedVaults: xiter.Map(config.MetaMorphoVaultAddresses, common.HexToAddress),
@@ -46,29 +47,17 @@ func NewEventsListener(
 	}, nil
 }
 
-func (l *eventsListener) StartListeningForEventsLogs(ctx context.Context, eventsLogs chan<- *types.Log) error {
-	blocks := make(chan uint64, 1)
-	defer close(blocks)
-
-	eg, egCtx := errgroup.WithContext(ctx)
-	defer eg.Wait()
-
-	eg.Go(func() error {
-		l.blocksListenerService.StartListeningForNewBlocks(egCtx, blocks)
-
-		return nil
-	})
-
+func (l *eventsListener) StartListeningForEventsLogs(ctx context.Context, blocks <-chan uint64, eventsLogs chan<- *types.Log) error {
 	for {
 		select {
-		case <-egCtx.Done():
-			return egCtx.Err()
+		case <-ctx.Done():
+			return ctx.Err()
 
 		case block := <-blocks:
 			allTargetAddresses := []common.Address{l.metamorphoFactoryAddress}
 			allTargetAddresses = append(allTargetAddresses, l.metamorphoDeployedVaults...)
 
-			capturedEventsLogs, err := l.captureEventsLogsForBlock(egCtx, block, allTargetAddresses)
+			capturedEventsLogs, err := l.captureEventsLogsForBlock(ctx, block, allTargetAddresses)
 			if err != nil {
 				return err
 			}

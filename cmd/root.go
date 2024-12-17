@@ -50,6 +50,7 @@ There are different types of timelocked actions:
 Using various connectors, the users can receive alerts on platforms such as Discord, Slack, Telegram and so on.
 You can also configure a custom connector that fits your own needs!
 `, sentinelAsciiArt),
+	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 		defer stop()
@@ -85,7 +86,6 @@ You can also configure a custom connector that fits your own needs!
 
 		eventsListenerService, err := initEventsListenerService(
 			sentinelConfig.EventsListener,
-			blocksListenerService,
 			elClient,
 			metaMorphoFactoryABI,
 			metaMorphoVaultABI,
@@ -107,6 +107,7 @@ You can also configure a custom connector that fits your own needs!
 		notifierService := initNotifierService()
 
 		sentinelService := sentinel.NewService(
+			blocksListenerService,
 			eventsListenerService,
 			eventsDecoderService,
 			indexerService,
@@ -194,14 +195,12 @@ func initABIs() (abi.ABI, abi.ABI, error) {
 
 func initEventsListenerService(
 	eventsListenerConfig *listener.EventsListenerConfiguration,
-	blocksListenerService listener.BlocksListener,
 	elClient *ethclient.Client,
 	metaMorphoFactoryABI abi.ABI,
 	metaMorphoVaultABI abi.ABI,
 ) (listener.EventsListener, error) {
 	eventsListenerService, err := listener.NewEventsListener(
 		eventsListenerConfig,
-		blocksListenerService,
 		elClient,
 		metaMorphoFactoryABI,
 		metaMorphoVaultABI,
