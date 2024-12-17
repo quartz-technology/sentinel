@@ -7,10 +7,14 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
+// BlocksListener is used to capture the new blocks numbers as the chain progresses.
 type BlocksListener interface {
+	// StartListeningForNewBlocks sends the new block numbers into a channel read by another service.
 	StartListeningForNewBlocks(ctx context.Context, blocks chan<- uint64) error
 }
 
+// blocksListener is the implementation of the Service interface.
+// It uses an HTTP client and the polling strategy to refresh its view of the latest block.
 type blocksListener struct {
 	refreshInterval time.Duration
 	elClient        *ethclient.Client

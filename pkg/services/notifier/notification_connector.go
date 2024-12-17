@@ -7,7 +7,9 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// A NotificationConnector is used to connect to a service able to receive the notification (Discord, Telegram, Slack, ...).
 type NotificationConnector interface {
+	// SendNotification sends the notification alerting the detection of a timelocked-action to the user.
 	SendNotification(ctx context.Context, action types.TimelockedAction) error
 }
 

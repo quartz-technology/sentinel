@@ -6,6 +6,7 @@ import (
 	"github.com/quartz-technology/sentinel/pkg/services/logger"
 )
 
+// Configuration is used to configure the Sentinel Service.
 type Configuration struct {
 	Logger         *logger.Configuration                 `mapstructure:"logger" validate:"required"`
 	ELClient       *elclient.Configuration               `mapstructure:"el-client" validate:"required"`

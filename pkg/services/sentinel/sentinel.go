@@ -11,11 +11,14 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// Service is the main Sentinel application.
 type Service interface {
+	// Run starts the monitoring, indexing and alerting services of Sentinel.
 	Run(ctx context.Context) error
 }
 
 type service struct {
+	blocksListenerService listener.BlocksListener
 	eventsListenerService listener.EventsListener
 	eventsDecoderService  decoder.Service
 	indexerService        indexer.Service
@@ -23,12 +26,14 @@ type service struct {
 }
 
 func NewService(
+	blocksListenerService listener.BlocksListener,
 	eventsListenerService listener.EventsListener,
 	eventsDecoderService decoder.Service,
 	indexerService indexer.Service,
 	notifierService notifier.Service,
 ) Service {
 	return &service{
+		blocksListenerService: blocksListenerService,
 		eventsListenerService: eventsListenerService,
 		eventsDecoderService:  eventsDecoderService,
 		indexerService:        indexerService,
@@ -37,6 +42,9 @@ func NewService(
 }
 
 func (s *service) Run(ctx context.Context) error {
+	blocks := make(chan uint64, 1)
+	defer close(blocks)
+
 	capturedEventsLogs := make(chan *types.Log, 1)
 	defer close(capturedEventsLogs)
 
@@ -44,10 +52,18 @@ func (s *service) Run(ctx context.Context) error {
 	defer close(timelockedActions)
 
 	eg, egCtx := errgroup.WithContext(ctx)
-	defer eg.Wait()
 
 	eg.Go(func() error {
-		err := s.eventsListenerService.StartListeningForEventsLogs(egCtx, capturedEventsLogs)
+		err := s.blocksListenerService.StartListeningForNewBlocks(egCtx, blocks)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	eg.Go(func() error {
+		err := s.eventsListenerService.StartListeningForEventsLogs(egCtx, blocks, capturedEventsLogs)
 		if err != nil {
 			return err
 		}
@@ -73,5 +89,5 @@ func (s *service) Run(ctx context.Context) error {
 		return nil
 	})
 
-	return nil
+	return eg.Wait()
 }
