@@ -7,6 +7,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/quartz-technology/sentinel/pkg/types"
 	xcrypto "github.com/quartz-technology/sentinel/pkg/x/crypto"
+	"github.com/sirupsen/logrus"
 )
 
 // Service is used to decode the events that the listener service captured, which have been emitted by the MetaMorpho vaults.
@@ -49,6 +50,8 @@ func (s *service) StartDecodingEventsLogs(ctx context.Context, eventsLogs <-chan
 			return ctx.Err()
 
 		case eventLog := <-eventsLogs:
+			logrus.WithField("event_contract_address", eventLog.Value().Address).Infoln("Decoding captured event log emitted by contract")
+
 			eventLogSigHash := eventLog.Value().Topics[0].String()
 
 			timelockedAction, ok := s.sigHashToTimelockedAction[eventLogSigHash]
@@ -65,6 +68,10 @@ func (s *service) StartDecodingEventsLogs(ctx context.Context, eventsLogs <-chan
 			if err != nil {
 				return err
 			}
+
+			logrus.WithFields(logrus.Fields{
+				"kind": timelockedAction.Kind(),
+			}).Infoln("Decoded timelocked action")
 
 			timelockedActions <- timelockedAction
 		}

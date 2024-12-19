@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/sirupsen/logrus"
 )
 
 // BlocksListener is used to capture the new blocks numbers as the chain progresses.
@@ -33,6 +34,7 @@ func (l *blocksListener) StartListeningForNewBlocks(ctx context.Context, blocks 
 		return err
 	}
 
+	logrus.WithField("block_number", oldBlock).Infoln("Fetched new block from EL Client")
 	blocks <- oldBlock
 
 	t := time.NewTicker(l.refreshInterval)
@@ -51,6 +53,8 @@ func (l *blocksListener) StartListeningForNewBlocks(ctx context.Context, blocks 
 
 			if newBlock > oldBlock {
 				for i := oldBlock + 1; i <= newBlock; i++ {
+					logrus.WithField("block_number", i).Infoln("Fetched new block from EL Client")
+
 					blocks <- i
 				}
 

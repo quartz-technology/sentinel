@@ -13,6 +13,7 @@ import (
 	"github.com/quartz-technology/sentinel/pkg/types"
 	xcrypto "github.com/quartz-technology/sentinel/pkg/x/crypto"
 	xiter "github.com/quartz-technology/sentinel/pkg/x/iter"
+	"github.com/sirupsen/logrus"
 )
 
 // EventsListener is used to capture the events emitted by the MetaMorpho Factory and Vaults at each block.
@@ -57,10 +58,20 @@ func (l *eventsListener) StartListeningForEventsLogs(ctx context.Context, blocks
 			allTargetAddresses := []common.Address{l.metamorphoFactoryAddress}
 			allTargetAddresses = append(allTargetAddresses, l.metamorphoDeployedVaults...)
 
+			logrus.WithFields(logrus.Fields{
+				"block_number":       block,
+				"contract_addresses": allTargetAddresses,
+			}).Infoln("Capturing events logs emitted by contracts at block")
+
 			capturedEventsLogs, err := l.captureEventsLogsForBlock(ctx, block, allTargetAddresses)
 			if err != nil {
 				return err
 			}
+
+			logrus.WithFields(logrus.Fields{
+				"block_number":         block,
+				"captured_events_logs": len(capturedEventsLogs),
+			}).Infoln("Captured events logs emitted at block")
 
 			for _, capturedEventLog := range capturedEventsLogs {
 				eventsLogs <- capturedEventLog
