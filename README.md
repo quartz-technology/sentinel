@@ -46,16 +46,21 @@ cast send 0x38989BBA00BDF8181F4082995b3DEAe96163aC5D --from 0x2566f66f68ed438726
 
 And you should see a log similar to the following appear in your terminal:
 ```shell
-INFO[2024-12-17T18:24:55+01:00]
-INFO[2024-12-17T18:24:55+01:00]      _____            __  _            __
-INFO[2024-12-17T18:24:55+01:00]     / ___/___  ____  / /_(_)___  ___  / /
-INFO[2024-12-17T18:24:55+01:00]     \__ \/ _ \/ __ \/ __/ / __ \/ _ \/ /
-INFO[2024-12-17T18:24:55+01:00]    ___/ /  __/ / / / /_/ / / / /  __/ /
-INFO[2024-12-17T18:24:55+01:00]   /____/\___/_/ /_/\__/_/_/ /_/\___/_/
-INFO[2024-12-17T18:24:55+01:00]
-INFO[2024-12-17T18:24:55+01:00]
-DEBU[2024-12-17T18:24:55+01:00] All services initialized, starting sentinel..
-INFO[2024-12-17T18:25:09+01:00] A new timelocked-action has been detected!    block_number=21423732 current_timelock=96h0m0s description="Timelock decreased to 95h59m59s" valid_at="2024-12-21 18:24:59 +0100 CET" vault=0x38989BBA00BDF8181F4082995b3DEAe96163aC5D
+INFO[2024-12-19T19:51:54+01:00]
+INFO[2024-12-19T19:51:54+01:00]      _____            __  _            __
+INFO[2024-12-19T19:51:54+01:00]     / ___/___  ____  / /_(_)___  ___  / /
+INFO[2024-12-19T19:51:54+01:00]     \__ \/ _ \/ __ \/ __/ / __ \/ _ \/ /
+INFO[2024-12-19T19:51:54+01:00]    ___/ /  __/ / / / /_/ / / / /  __/ /
+INFO[2024-12-19T19:51:54+01:00]   /____/\___/_/ /_/\__/_/_/ /_/\___/_/
+INFO[2024-12-19T19:51:54+01:00]
+INFO[2024-12-19T19:51:54+01:00]
+INFO[2024-12-19T19:51:54+01:00] All services initialized, starting sentinel..
+INFO[2024-12-19T19:51:54+01:00] Fetched new block from EL Client              block_number=21429072
+INFO[2024-12-19T19:51:54+01:00] Capturing events logs emitted by contracts at block  block_number=21429072 contract_addresses="[0xA9c3D3a366466Fa809d1Ae982Fb2c46E5fC41101 0x38989BBA00BDF8181F4082995b3DEAe96163aC5D]"
+INFO[2024-12-19T19:51:54+01:00] Captured events logs emitted at block         block_number=21429072 captured_events_logs=1
+INFO[2024-12-19T19:51:54+01:00] Decoding captured event log emitted by contract  event_contract_address=0x38989BBA00BDF8181F4082995b3DEAe96163aC5D
+INFO[2024-12-19T19:51:54+01:00] Decoded timelocked action                     kind="Timelock Decrease"
+INFO[2024-12-19T19:51:54+01:00] A new timelocked-action has been detected!    block_number=21429072 chain=mainnet current_timelock=96h0m0s description="Timelock decreased to 95h59m59s" kind="Timelock Decrease" valid_at="2024-12-22 12:25:06 +0100 CET" vault=0x38989BBA00BDF8181F4082995b3DEAe96163aC5D
 ```
 
 ### Production

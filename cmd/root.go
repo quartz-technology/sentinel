@@ -117,14 +117,14 @@ You can also configure a custom connector that fits your own needs!
 			notifierService,
 		)
 
-		logrus.Debug("All services initialized, starting sentinel..")
+		logrus.Infoln("All services initialized, starting sentinel..")
 
 		err = sentinelService.Run(ctx)
 		if err != nil {
 			return err
 		}
 
-		logrus.Debug("Sentinel interrupted, shutting down..")
+		logrus.Infoln("Sentinel interrupted, shutting down..")
 
 		return nil
 	},
