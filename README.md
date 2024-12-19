@@ -17,6 +17,7 @@
   - [Locally - Using Docker](#locally---using-docker)
   - [Production](#production)
 - [Contributing](#contributing)
+- [TODO](#todo)
 - [Authors](#authors)
 
 ## Introduction
@@ -127,6 +128,20 @@ Coming soon.
 We welcome all contributions, specially for new connectors to send notifications via new channels!
 
 Check out [the dedicated file](./CONTRIBUTING.md) for more.
+
+## TODO
+
+This is what's left to do to have a "production-ready" Sentinel:
+
+- [ ] Implement indexer service.
+- [ ] Implement Telegram notification connector.
+- [ ] Implement Slack notification connector.
+
+And those are the nice-to-have features in the long-run:
+
+- [ ] Reduce RPC calls.
+- [ ] Implement WebHook service.
+- [ ] Add more logging.
 
 ## Authors
 
