@@ -8,6 +8,18 @@
     Indexing, monitoring and alerting solution for MetaMorpho vaults time-locked operations.
 </p>
 
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Architecture](#architecture)
+- [Getting Started](#getting-started)
+  - [Locally - From Source](#locally---from-source)
+  - [Locally - Using Docker](#locally---using-docker)
+  - [Production](#production)
+- [Contributing](#contributing)
+- [TODO](#todo)
+- [Authors](#authors)
+
 ## Introduction
 
 On a MetaMorpho Vault, there are several actions with a potential impact against the user's interest.
@@ -21,7 +33,7 @@ Coming soon.
 
 ## Getting Started
 
-### Locally - From source
+### Locally - From Source
 
 You can run Sentinel locally by forking the network where the MetaMorpho Vault is deployed.
 
@@ -116,6 +128,20 @@ Coming soon.
 We welcome all contributions, specially for new connectors to send notifications via new channels!
 
 Check out [the dedicated file](./CONTRIBUTING.md) for more.
+
+## TODO
+
+This is what's left to do to have a "production-ready" Sentinel:
+
+- [ ] Implement indexer service.
+- [ ] Implement Telegram notification connector.
+- [ ] Implement Slack notification connector.
+
+And those are the nice-to-have features in the long-run:
+
+- [ ] Reduce RPC calls.
+- [ ] Implement WebHook service.
+- [ ] Add more logging.
 
 ## Authors
 
