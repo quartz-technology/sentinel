@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  sentinel:
+    command:
+      - "--config=/app/sentinel-config.yaml"
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+      - sentinel-net
+    volumes:
+      - ./etc/config.example.docker.yaml:/app/sentinel-config.yaml
+
+networks:
+  sentinel-net:

@@ -1,0 +1,18 @@
+logger:
+  log-level: debug
+
+el-client:
+  rpc-url: http://host.docker.internal:8545
+
+blocks-listener:
+  refresh-interval: 1s
+
+events-listener:
+  metamorpho-factory-address: 0xA9c3D3a366466Fa809d1Ae982Fb2c46E5fC41101
+  metamorpho-vault-addresses:
+    - 0x38989BBA00BDF8181F4082995b3DEAe96163aC5D
+
+notifier:
+  exit-on-error: True
+  # discord-notification-connector:
+  #   webhook-url: http://localhost:1234
