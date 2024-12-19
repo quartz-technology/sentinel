@@ -8,6 +8,17 @@
     Indexing, monitoring and alerting solution for MetaMorpho vaults time-locked operations.
 </p>
 
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Architecture](#architecture)
+- [Getting Started](#getting-started)
+  - [Locally - From Source](#locally-from-source)
+  - [Locally - Using Docker](#locally-using-docker)
+  - [Production](#production)
+- [Contributing](#contributing)
+- [Authors](#authors)
+
 ## Introduction
 
 On a MetaMorpho Vault, there are several actions with a potential impact against the user's interest.
@@ -21,7 +32,7 @@ Coming soon.
 
 ## Getting Started
 
-### Locally - From source
+### Locally - From Source
 
 You can run Sentinel locally by forking the network where the MetaMorpho Vault is deployed.
 
