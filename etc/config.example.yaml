@@ -12,3 +12,7 @@ events-listener:
   metamorpho-vault-addresses:
     - 0x38989BBA00BDF8181F4082995b3DEAe96163aC5D
 
+notifier:
+  exit-on-error: True
+  # discord-notification-connector:
+  #   webhook-url: http://localhost:1234

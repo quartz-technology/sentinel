@@ -59,14 +59,33 @@ func (a *DecreaseTimelock) DecodeFromEventLog(ctx context.Context, utils *Decodi
 		return nil, err
 	}
 
+	chainID, err := utils.elClient.ChainID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	return NewDecreaseTimelockAction(
-		NewBaseTimelockedAction(eventLog.value.Address, currentTimelock, res.ValidAt, eventLog.blockNumber),
+		NewBaseTimelockedAction(
+			eventLog.value.Address,
+			utils.Network(chainID.Uint64()),
+			currentTimelock,
+			res.ValidAt,
+			eventLog.blockNumber,
+		),
 		newTimelock,
 	), nil
 }
 
+func (a *DecreaseTimelock) Kind() string {
+	return "Timelock Decrease"
+}
+
 func (a *DecreaseTimelock) VaultAddress() common.Address {
 	return a.vaultAddress
+}
+
+func (a *DecreaseTimelock) VaultNetwork() NetworkName {
+	return a.vaultNetwork
 }
 
 func (a *DecreaseTimelock) CurrentTimelock() time.Duration {

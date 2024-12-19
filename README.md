@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-    Indexing, monitoring and alerting solution for Morpho vaults time-locked operations.
+    Indexing, monitoring and alerting solution for MetaMorpho vaults time-locked operations.
 </p>
 
 ## Introduction
@@ -27,7 +27,7 @@ You can run Sentinel locally by forking the network where the MetaMorpho Vault i
 
 First, you need to fork the network using anvil:
 ```shell
-anvil -f $RPC_URL --auto-impersonate
+anvil -f $RPC_URL --auto-impersonate --fork-block-number 21429070
 ```
 
 Then, you can start Sentinel:

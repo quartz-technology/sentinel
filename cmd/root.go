@@ -104,7 +104,10 @@ You can also configure a custom connector that fits your own needs!
 
 		indexerService := initIndexerService()
 
-		notifierService := initNotifierService()
+		notifierService, err := initNotifierService(sentinelConfig.Notifier)
+		if err != nil {
+			return err
+		}
 
 		sentinelService := sentinel.NewService(
 			blocksListenerService,
@@ -227,13 +230,22 @@ func initIndexerService() indexer.Service {
 	return indexerService
 }
 
-func initNotifierService() notifier.Service {
+func initNotifierService(notifierConfig *notifier.Configuration) (notifier.Service, error) {
 	notificationConnectors := make([]notifier.NotificationConnector, 0)
 	notificationConnectors = append(notificationConnectors, notifier.NewTerminalLogNotificationConnector())
 
-	notifierService := notifier.NewService(notificationConnectors)
+	if notifierConfig.DiscordNotificationConnector != nil {
+		discordNotificationConnector, err := notifier.NewDiscordNotificationConnector(notifierConfig.DiscordNotificationConnector)
+		if err != nil {
+			return nil, err
+		}
 
-	return notifierService
+		notificationConnectors = append(notificationConnectors, discordNotificationConnector)
+	}
+
+	notifierService := notifier.NewService(notifierConfig, notificationConnectors)
+
+	return notifierService, nil
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
