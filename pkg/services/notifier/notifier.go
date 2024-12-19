@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/quartz-technology/sentinel/pkg/types"
+	"github.com/sirupsen/logrus"
 )
 
 // Service is used to send notifications upon reception of a timelock action captured by Sentinel.
@@ -15,12 +16,20 @@ type Service interface {
 // service is the implementation of the Service interface.
 // It uses multiple connectors, each one implementing a specific communication channel.
 type service struct {
-	connectors []NotificationConnector
+	exitOnError bool
+	connectors  []NotificationConnector
 }
 
-func NewService(connectors []NotificationConnector) Service {
+func NewService(config *Configuration, connectors []NotificationConnector) Service {
+	exitOnError := false
+
+	if config.ExitOnError != nil {
+		exitOnError = *config.ExitOnError
+	}
+
 	return &service{
-		connectors: connectors,
+		exitOnError: exitOnError,
+		connectors:  connectors,
 	}
 }
 
@@ -33,7 +42,11 @@ func (s *service) StartNotifyingTimeLockedActions(ctx context.Context, timelocke
 		case timelockedAction := <-timelockedActions:
 			for _, connector := range s.connectors {
 				if err := connector.SendNotification(ctx, timelockedAction); err != nil {
-					return err
+					if s.exitOnError {
+						return err
+					}
+
+					logrus.WithError(err).Errorln("failed to send notification using connector")
 				}
 			}
 		}

@@ -4,6 +4,7 @@ import (
 	"github.com/quartz-technology/sentinel/pkg/elclient"
 	"github.com/quartz-technology/sentinel/pkg/services/listener"
 	"github.com/quartz-technology/sentinel/pkg/services/logger"
+	"github.com/quartz-technology/sentinel/pkg/services/notifier"
 )
 
 // Configuration is used to configure the Sentinel Service.
@@ -12,4 +13,5 @@ type Configuration struct {
 	ELClient       *elclient.Configuration               `mapstructure:"el-client" validate:"required"`
 	BlocksListener *listener.BlocksListenerConfiguration `mapstructure:"blocks-listener" validate:"required"`
 	EventsListener *listener.EventsListenerConfiguration `mapstructure:"events-listener" validate:"required"`
+	Notifier       *notifier.Configuration               `mapstructure:"notifier" validate:"required"`
 }
